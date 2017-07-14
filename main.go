@@ -61,6 +61,7 @@ func dealResponse(httpBody string, alfredResponse *alfred.Response) {
 	var ipString string
 	var location string
 	var suffx string
+	isCurrentIP := true
 	_, err := fmt.Sscanf(string(title), "当前 IP：%s 来自：%s %s", &ipString, &location, &suffx)
 	if err != nil {
 		_, err := fmt.Sscanf(string(title), "IP：%s 来自：%s %s", &ipString, &location, &suffx)
@@ -68,8 +69,13 @@ func dealResponse(httpBody string, alfredResponse *alfred.Response) {
 			utils.AdItem(alfredResponse, string(err.Error()))
 			return
 		}
+		isCurrentIP = false
 	}
 	// fmt.Printf("%v => %v\n", ipString, location)
-	utils.AdItem(alfredResponse, "当前IP: "+ipString)
+	if isCurrentIP {
+		utils.AdItem(alfredResponse, "当前IP: "+ipString)
+	} else {
+		utils.AdItem(alfredResponse, "IP: "+ipString)
+	}
 	utils.AdItem(alfredResponse, "来自: "+location+" "+suffx)
 }
